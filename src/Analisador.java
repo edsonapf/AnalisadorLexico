@@ -67,18 +67,15 @@ public class Analisador {
         char linha[];
         StringBuilder auxLinha;
         int aumentou;
-        boolean aumenta; //variavel para saber se eh para aumentar
         
         for(int i = 0; i < cod.size(); i++){
             
             linha = cod.get(i).toCharArray();
             auxLinha = new StringBuilder(cod.get(i));
             aumentou = 0;
-            aumenta = false;
             
             
             for(int j = 0; j < linha.length; j++){
-                
                 
                 if(linha[j] == ';' || (linha[j] == ':' && linha[j+1] != '=') ||
                    linha[j] == '(' || linha[j] == ')' ||
@@ -86,18 +83,15 @@ public class Analisador {
                    linha[j] == '-' || linha[j] == '*' ||
                    linha[j] == '/'){
                     
-                    
-                    
                     if(j > 0 && linha[j-1] != ' '){
                         auxLinha.insert(j+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     if(j < (linha.length - 1) && linha[j+1] != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     
-                    if(aumenta)  aumentou++;
                     
                 }
                 
@@ -106,19 +100,16 @@ public class Analisador {
                     (linha[j] == '<' && linha[j+1] == '=') ||
                     (linha[j] == '<' && linha[j+1] == '>') ||
                     (linha[j] == ':' && linha[j+1] == '=') ){
-                   
-                    
                     
                     if((j > 0) && (linha[j-1] != ' ')){                        
                         auxLinha.insert(j+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     if(j < (linha.length - 2) && linha[j+2] != ' '){
                         auxLinha.insert(j+2+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     
-                    if(aumenta) aumentou++;
                                                
                 }
                 
@@ -127,14 +118,13 @@ public class Analisador {
                     
                     if(linha[j-1] != ' '){                        
                         auxLinha.insert(j+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     if(j < (linha.length - 1) && linha[j+1] != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     
-                    if(aumenta) aumentou++;
                     
                 }
                 
@@ -143,14 +133,13 @@ public class Analisador {
                     
                     if(j > 0 && linha[j-1] != ' '){                       
                         auxLinha.insert(j+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }    
                     if(j < (linha.length - 1) && linha[j+1] != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     
-                    if(aumenta) aumentou++;
                     
                 }
                 
@@ -161,15 +150,14 @@ public class Analisador {
                     if(j > 0 && linha[j-1] != ' '){
                         
                         auxLinha.insert(j+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                         
                     }
                     if(j < (linha.length - 1) && linha[j+1] != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
-                        aumenta = true;
+                        aumentou++;
                     }
                     
-                    if(aumenta) aumentou++;
                     
                 }
                 
