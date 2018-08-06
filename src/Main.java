@@ -14,8 +14,13 @@ public class Main {
         
         arq.lerArquivoCodigo();
         arqChave.lerArquivoChave();
-
+        
+        
         analisa.excluiComentario();
+        analisa.separaSimbolos();
+        analisa.excluiTabulacao();
+        
+        analisa.mostraCod();
         
     }
     
