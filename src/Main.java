@@ -19,6 +19,7 @@ public class Main {
         analisa.excluiComentario();
         analisa.separaSimbolos();
         analisa.excluiTabulacao();
+        analisa.separaVariavel();
         
         analisa.mostraCod();
         
