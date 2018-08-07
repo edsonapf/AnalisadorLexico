@@ -37,12 +37,17 @@ public class Analisador {
             
             for(int j = 0; j < linha.length; j++){
 
-                if(linha[j] == '{' && contChave <= 1)                 
+                if(linha[j] == '{' && contChave < 1)                 
                     contChave++;
                 
-                if(linha[j] == '}'){
+                if(linha[j] == '}' && contChave > 0){
                     contChave--;
                     linha[j] = ' ';
+                }else if(linha[j] == '}' && contChave == 0){
+                    
+                    //caso ele ache um fecha chave sem ter aberto
+                    return false;
+                    
                 }    
                     
                 if(contChave > 0)
@@ -53,9 +58,6 @@ public class Analisador {
             cod.set(i, String.valueOf(linha));
             
         }
-        
-        //for(int i = 0; i < cod.size(); i++)
-        //    System.out.println(cod.get(i));
         
         if(contChave == 0)
             return true;
@@ -171,6 +173,43 @@ public class Analisador {
         
     }
 
+    public String dividiString(String linha, int meioString){
+        
+        StringJoiner juntaQuebraString = new StringJoiner(" ");
+        String quebraString[] = new String[2];
+        
+        quebraString[0] = linha.substring(0, meioString);
+        quebraString[1] = linha.substring(meioString, linha.length());
+
+        for(String a: quebraString)
+            juntaQuebraString.add(a);
+        
+        
+        return juntaQuebraString.toString();
+        
+    }
+    
+    /*public void casoEspecial(String linha){
+        
+        boolean achouPonto = false;
+        
+        for(int i = 0; i < linha.length(); i++){
+            
+            while(linha.charAt(i) >= '0' && linha.charAt(i) <= '9'){
+                
+                if(linha.charAt(i) == '.'){
+                    break;
+                }
+                i++;
+                
+            }
+            
+        }
+        
+        
+    }*/
+    
+    
     public void separaVariavel(){
 
         String linha[];
@@ -189,19 +228,14 @@ public class Analisador {
 
                 juntaQuebraPalavra = new StringJoiner(" ");
                 
+                //Verifica se tem um inteiro antes da variavel
                 if(linha[j].matches("\\d+[a-zA-Z]\\w*")){
                     
                         for(int k = 0; k < linha[j].length(); k++){                         
                             
                             if(!(linha[j].charAt(k) >= '0' && linha[j].charAt(k) <= '9')){
    
-                                quebraPalavra[0] = linha[j].substring(0, k);
-                                quebraPalavra[1] = linha[j].substring(k, linha[j].length());
-                                
-                                for(String a: quebraPalavra)
-                                    juntaQuebraPalavra.add(a);
-
-                                linha[j] = juntaQuebraPalavra.toString();
+                                linha[j] = dividiString(linha[j], k);
                                 break;
 
                             }
@@ -209,17 +243,40 @@ public class Analisador {
                         }
 
                 }
-                else if(linha[j].matches("\\d+.\\d*[a-zA-Z]\\w*")){
+                //verifica se tem um real antes da variavel
+                else if(linha[j].matches("\\d+[.]\\d*[a-zA-Z]\\w*")){
 
                     boolean achouPonto = false;
                     
                     for(int k = 0; k < linha[j].length(); k++){
                         
+                        if(linha[j].charAt(k) == '.'){
+
+                            achouPonto = true;                            
+                            
+                        }
                         
+                        if(achouPonto){
+
+                            //Verifica se o caracter depois do ponto eh uma letra
+                            if(k < (linha[j].length() - 1) &&
+                               !(linha[j].charAt(k+1) >= '0' && linha[j].charAt(k+1) <= '9')){
+                                
+                                linha[j] = dividiString(linha[j], k+1);
+                                break;
+                                
+                            }
+                            
+                        }
                         
                     }
 
                 }
+                //else if(linha[j].matches("\\w+[.].*")){
+                    
+                  //  casoEspecial(linha[j]);
+                    
+                //}
 
             }
             
@@ -233,6 +290,78 @@ public class Analisador {
     }
     
     public void analisaCodigo(){
+        
+        String linhaQuebrada[];
+        
+        System.out.println("Token\t||\tClassificacao\t||\tLinha");
+        
+        for(int i = 0; i < cod.size(); i++){
+            
+            linhaQuebrada = cod.get(i).split(" ");
+            
+            for(int j = 0; j < linhaQuebrada.length; j++){
+                
+                if(linhaQuebrada[j].equals(chave.get(0)) ||
+                   linhaQuebrada[j].equals(chave.get(1)) ||
+                   linhaQuebrada[j].equals(chave.get(2)) ||
+                   linhaQuebrada[j].equals(chave.get(3)) ||
+                   linhaQuebrada[j].equals(chave.get(4)) ||
+                   linhaQuebrada[j].equals(chave.get(5)) ||
+                   linhaQuebrada[j].equals(chave.get(6)) ||
+                   linhaQuebrada[j].equals(chave.get(7)) ||
+                   linhaQuebrada[j].equals(chave.get(8)) ||
+                   linhaQuebrada[j].equals(chave.get(9)) ||
+                   linhaQuebrada[j].equals(chave.get(10)) ||
+                   linhaQuebrada[j].equals(chave.get(11)) ||
+                   linhaQuebrada[j].equals(chave.get(12)) ||
+                   linhaQuebrada[j].equals(chave.get(13))){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tPalavra reservada\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].equals("+") || 
+                        linhaQuebrada[j].equals("-") || 
+                        linhaQuebrada[j].equals("or")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tOperador aditivo\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].equals("*") || 
+                        linhaQuebrada[j].equals("/") || 
+                        linhaQuebrada[j].equals("and")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tOperador multiplicativo\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].matches("\\d+")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tNumero Inteiro\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].matches("\\d+[.]\\d*")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tNumero Real\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].equals(":=")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tAtribuicao\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].equals("<") || linhaQuebrada[j].equals(">") ||
+                        linhaQuebrada[j].equals("<=") || linhaQuebrada[j].equals(">=") ||
+                        linhaQuebrada[j].equals("<>") || linhaQuebrada[j].equals("=")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tOperador Relacional\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].equals(";") || linhaQuebrada[j].equals(":") ||
+                        linhaQuebrada[j].equals(",") || linhaQuebrada[j].equals(".") ||
+                        linhaQuebrada[j].equals("(") || linhaQuebrada[j].equals(")")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tDelimitador\t\t"+(i+1));
+                }
+                else if(linhaQuebrada[j].matches("[a-zA-Z]\\w*")){
+                    
+                    System.out.println(linhaQuebrada[j]+"\t\tIdentificador\t\t"+(i+1));
+                }
+                
+            }
+            
+        }
         
     }
     
