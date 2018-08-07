@@ -21,7 +21,7 @@ public class Main {
         analisa.excluiTabulacao();
         analisa.separaVariavel();
         
-        //analisa.mostraCod();
+        analisa.mostraCod();
         
     }
     

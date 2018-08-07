@@ -189,25 +189,65 @@ public class Analisador {
         
     }
     
-    /*public void casoEspecial(String linha){
+    public String casoEspecial(String linha){
         
         boolean achouPonto = false;
+        int inicio = 0;
         
         for(int i = 0; i < linha.length(); i++){
             
-            while(linha.charAt(i) >= '0' && linha.charAt(i) <= '9'){
+            if(linha.charAt(inicio) >= '0' && linha.charAt(inicio) <= '9'){
                 
                 if(linha.charAt(i) == '.'){
-                    break;
+                    
+                    if(achouPonto){
+                        
+                        linha = dividiString(linha, i);
+                        achouPonto = false;//caso seja um real saber se o ponto ja foi visto
+                        inicio = i + 1;
+                        
+                    }else{
+                        
+                        achouPonto = true;
+                        
+                    }
+                    
                 }
-                i++;
+                else if((linha.charAt(i) >= 'a' && linha.charAt(i) <= 'z') ||
+                        (linha.charAt(i) >= 'A' && linha.charAt(i) <= 'Z')){
+                    
+                    linha = dividiString(linha, i);
+                    inicio = i + 1;
+                }
                 
             }
+            else if((linha.charAt(inicio) >= 'a' && linha.charAt(inicio) <= 'z') ||
+                    (linha.charAt(inicio) >= 'A' && linha.charAt(inicio) <= 'Z')){
+                
+                if(linha.charAt(i) == '.'){
+                    
+                    linha = dividiString(linha, i);
+                    inicio = i + 1;
+                    
+                }
+                
+            }
+            else if(linha.charAt(inicio) == '.'){
+
+                linha = dividiString(linha, inicio+1);
+                inicio = i + 1;
+
+            }
+            else if(linha.charAt(inicio) == ' '){
+                inicio = i +1;
+            }
+            
             
         }
+               
+        return linha;
         
-        
-    }*/
+    }
     
     
     public void separaVariavel(){
@@ -272,11 +312,11 @@ public class Analisador {
                     }
 
                 }
-                //else if(linha[j].matches("\\w+[.].*")){
+                else if(linha[j].matches("\\w+[.].*")){
+                    //System.out.println(linha[j]);
+                    linha[j] = casoEspecial(linha[j]);
                     
-                  //  casoEspecial(linha[j]);
-                    
-                //}
+                }
 
             }
             
