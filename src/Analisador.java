@@ -14,7 +14,30 @@ public class Analisador {
         
     }
     
-    public void excluiTabulacao(){
+    private boolean verificaSimbolos(){
+        
+        for(int i = 0; i < cod.size(); i++){
+            
+            for(int j = 0; j < cod.get(i).length(); j++){
+                
+                //Se nao estiver nesse intervalo de caracteres, possui caracteres invalidos
+                if(!((cod.get(i).charAt(j) >= '(' && cod.get(i).charAt(j) <= '>') ||
+                    (cod.get(i).charAt(j) >= 'A' && cod.get(i).charAt(j) <= 'Z') ||
+                    (cod.get(i).charAt(j) >= 'a' && cod.get(i).charAt(j) <= 'z') ||
+                    (cod.get(i).charAt(j) == ' ') || (cod.get(i).charAt(j) == '\t'))){
+                    
+                    return false;
+                }
+                
+            }
+            
+        }
+        
+        return true;
+        
+    }
+    
+    private void excluiTabulacao(){
         
         for(int i = 0; i < cod.size(); i++){
             
@@ -26,7 +49,7 @@ public class Analisador {
     
     //Se a função retornar falso, quer dizer que o comentário não foi fechado
     //Ajeitar a parte do comentario quando tem mais de uma chave ou quando fecha antes de abrir
-    public boolean excluiComentario(){
+    private boolean excluiComentario(){
         
         char linha[];
         int contChave = 0;
@@ -66,32 +89,32 @@ public class Analisador {
         
     }
     
-    public void separaSimbolos(){
+    private void separaSimbolos(){
         
-        char linha[];
+        String linha;
         StringBuilder auxLinha;
         int aumentou;
         
         for(int i = 0; i < cod.size(); i++){
             
-            linha = cod.get(i).toCharArray();
-            auxLinha = new StringBuilder(cod.get(i));
+            linha = cod.get(i);
+            auxLinha = new StringBuilder(linha);
             aumentou = 0;
             
             
-            for(int j = 0; j < linha.length; j++){
+            for(int j = 0; j < linha.length(); j++){
                 
-                if(linha[j] == ';' || (linha[j] == ':' && linha[j+1] != '=') ||
-                   linha[j] == '(' || linha[j] == ')' ||
-                   linha[j] == ',' || linha[j] == '+' ||
-                   linha[j] == '-' || linha[j] == '*' ||
-                   linha[j] == '/'){
+                if(linha.charAt(j) == ';' || (linha.charAt(j) == ':' && linha.charAt(j+1) != '=') ||
+                   linha.charAt(j) == '(' || linha.charAt(j) == ')' ||
+                   linha.charAt(j) == ',' || linha.charAt(j) == '*' ||
+                   linha.charAt(j) == '/' || linha.charAt(j) == '+' ||
+                   linha.charAt(j) == '-'){
                     
-                    if(j > 0 && linha[j-1] != ' '){
+                    if(j > 0 && linha.charAt(j-1) != ' '){
                         auxLinha.insert(j+aumentou, ' ');
                         aumentou++;
                     }
-                    if(j < (linha.length - 1) && linha[j+1] != ' '){
+                    if(j < (linha.length() - 1) && linha.charAt(j+1) != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
                         aumentou++;
                     }
@@ -99,17 +122,68 @@ public class Analisador {
                     
                 }
                 
+                else if(linha.charAt(j) == 'o' && linha.charAt(j+1) == 'r'){
                     
-                else if( (linha[j] == '>' && linha[j+1] == '=') ||
-                    (linha[j] == '<' && linha[j+1] == '=') ||
-                    (linha[j] == '<' && linha[j+1] == '>') ||
-                    (linha[j] == ':' && linha[j+1] == '=') ){
+                    if(j > 0 &&
+                       !((linha.charAt(j-1) >= 'a' && linha.charAt(j-1) <= 'z') ||
+                         (linha.charAt(j-1) >= 'A' && linha.charAt(j-1) <= 'Z'))){
+                        
+                        if(j < (linha.length() - 2) &&
+                           !((linha.charAt(j+2) >= 'a' && linha.charAt(j+2) <= 'z') ||
+                           (linha.charAt(j+2) >= 'A' && linha.charAt(j+2) <= 'Z'))){
+                            
+                            if(linha.charAt(j-1) != ' '){
+                                auxLinha.insert(j+aumentou, ' ');
+                                aumentou++;
+                            }
+                                
+                            if(linha.charAt(j+2) != ' '){
+                                auxLinha.insert(j+2+aumentou, ' ');
+                                aumentou++;
+                            }
+                            
+                            
+                        }
+                    }
                     
-                    if((j > 0) && (linha[j-1] != ' ')){                        
+                }
+                
+                else if(linha.charAt(j) == 'a' && linha.charAt(j+1) == 'n' &&  linha.charAt(j+2) == 'd'){
+                    
+                    if(j > 0 &&
+                       !((linha.charAt(j-1) >= 'a' && linha.charAt(j-1) <= 'z') ||
+                         (linha.charAt(j-1) >= 'A' && linha.charAt(j-1) <= 'Z'))){
+                        
+                        if(j < (linha.length() - 3) &&
+                           !((linha.charAt(j+3) >= 'a' && linha.charAt(j+3) <= 'z') ||
+                           (linha.charAt(j+3) >= 'A' && linha.charAt(j+3) <= 'Z'))){
+                            
+                            if(linha.charAt(j-1) != ' '){
+                                auxLinha.insert(j+aumentou, ' ');
+                                aumentou++;
+                            }
+                                
+                            if(linha.charAt(j+3) != ' '){
+                                auxLinha.insert(j+3+aumentou, ' ');
+                                aumentou++;
+                            }
+                            
+                            
+                        }
+                    }
+                    
+                }
+                    
+                else if( (linha.charAt(j) == '>' && linha.charAt(j+1) == '=') ||
+                    (linha.charAt(j) == '<' && linha.charAt(j+1) == '=') ||
+                    (linha.charAt(j) == '<' && linha.charAt(j+1) == '>') ||
+                    (linha.charAt(j) == ':' && linha.charAt(j+1) == '=') ){
+                    
+                    if((j > 0) && (linha.charAt(j-1) != ' ')){                        
                         auxLinha.insert(j+aumentou, ' ');
                         aumentou++;
                     }
-                    if(j < (linha.length - 2) && linha[j+2] != ' '){
+                    if(j < (linha.length() - 2) && linha.charAt(j+2) != ' '){
                         auxLinha.insert(j+2+aumentou, ' ');
                         aumentou++;
                     }
@@ -118,13 +192,14 @@ public class Analisador {
                 }
                 
                 //Verifica apenas o =
-                else if((linha[j] == '=') && (j > 0) && (linha[j-1] != '<' && linha[j-1] != '>' && linha[j-1] != ':')){
+                else if((linha.charAt(j) == '=') && (j > 0) && 
+                        (linha.charAt(j-1) != '<' && linha.charAt(j-1) != '>' && linha.charAt(j-1) != ':')){
                     
-                    if(linha[j-1] != ' '){                        
+                    if(linha.charAt(j-1) != ' '){                        
                         auxLinha.insert(j+aumentou, ' ');
                         aumentou++;
                     }
-                    if(j < (linha.length - 1) && linha[j+1] != ' '){
+                    if(j < (linha.length() - 1) && linha.charAt(j+1) != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
                         aumentou++;
                     }
@@ -132,14 +207,14 @@ public class Analisador {
                     
                 }
                 
-                else if( (linha[j] == '>' && linha[j+1] != '=') ||
-                    (linha[j] == '<' && linha[j+1] != '=') ){
+                else if( (linha.charAt(j) == '>' && linha.charAt(j+1) != '=') ||
+                    (linha.charAt(j) == '<' && linha.charAt(j+1) != '=') ){
                     
-                    if(j > 0 && linha[j-1] != ' '){                       
+                    if(j > 0 && linha.charAt(j-1) != ' '){                       
                         auxLinha.insert(j+aumentou, ' ');
                         aumentou++;
                     }    
-                    if(j < (linha.length - 1) && linha[j+1] != ' '){
+                    if(j < (linha.length() - 1) && linha.charAt(j+1) != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
                         aumentou++;
                     }
@@ -149,15 +224,15 @@ public class Analisador {
                 
                 
                 //Ajeitar o ponto final quando ele é o ultimo
-                else if((linha[j] == '.' && !(linha[j-1] >= '0' && linha[j-1] <= '9'))){
+                else if((linha.charAt(j) == '.' && !(linha.charAt(j-1) >= '0' && linha.charAt(j-1) <= '9'))){
                     
-                    if(j > 0 && linha[j-1] != ' '){
+                    if(j > 0 && linha.charAt(j-1) != ' '){
                         
                         auxLinha.insert(j+aumentou, ' ');
                         aumentou++;
                         
                     }
-                    if(j < (linha.length - 1) && linha[j+1] != ' '){
+                    if(j < (linha.length() - 1) && linha.charAt(j+1) != ' '){
                         auxLinha.insert(j+1+aumentou, ' ');
                         aumentou++;
                     }
@@ -173,7 +248,7 @@ public class Analisador {
         
     }
 
-    public String dividiString(String linha, int meioString){
+    private String dividiString(String linha, int meioString){
         
         StringJoiner juntaQuebraString = new StringJoiner(" ");
         String quebraString[] = new String[2];
@@ -189,7 +264,7 @@ public class Analisador {
         
     }
     
-    public String casoEspecial(String linha){
+    private String casoEspecial(String linha){
         
         boolean achouPonto = false;
         int inicio = 0;
@@ -218,6 +293,7 @@ public class Analisador {
                     
                     linha = dividiString(linha, i);
                     inicio = i + 1;
+                    achouPonto = false;
                 }
                 
             }
@@ -250,11 +326,10 @@ public class Analisador {
     }
     
     
-    public void separaVariavel(){
+    private void separaVariavel(){
 
         String linha[];
         String quebraPalavra[] = new String[2];
-        StringJoiner juntaQuebraPalavra;
         StringJoiner juntaLinha;
         
 
@@ -265,58 +340,8 @@ public class Analisador {
             linha = cod.get(i).split(" ");
 
             for(int j = 0; j < linha.length; j++){
-
-                juntaQuebraPalavra = new StringJoiner(" ");
                 
-                //Verifica se tem um inteiro antes da variavel
-                if(linha[j].matches("\\d+[a-zA-Z]\\w*")){
-                    
-                        for(int k = 0; k < linha[j].length(); k++){                         
-                            
-                            if(!(linha[j].charAt(k) >= '0' && linha[j].charAt(k) <= '9')){
-   
-                                linha[j] = dividiString(linha[j], k);
-                                break;
-
-                            }
-                            
-                        }
-
-                }
-                //verifica se tem um real antes da variavel
-                else if(linha[j].matches("\\d+[.]\\d*[a-zA-Z]\\w*")){
-
-                    boolean achouPonto = false;
-                    
-                    for(int k = 0; k < linha[j].length(); k++){
-                        
-                        if(linha[j].charAt(k) == '.'){
-
-                            achouPonto = true;                            
-                            
-                        }
-                        
-                        if(achouPonto){
-
-                            //Verifica se o caracter depois do ponto eh uma letra
-                            if(k < (linha[j].length() - 1) &&
-                               !(linha[j].charAt(k+1) >= '0' && linha[j].charAt(k+1) <= '9')){
-                                
-                                linha[j] = dividiString(linha[j], k+1);
-                                break;
-                                
-                            }
-                            
-                        }
-                        
-                    }
-
-                }
-                else if(linha[j].matches("\\w+[.].*")){
-                    //System.out.println(linha[j]);
-                    linha[j] = casoEspecial(linha[j]);
-                    
-                }
+                linha[j] = casoEspecial(linha[j]);                    
 
             }
             
@@ -333,7 +358,21 @@ public class Analisador {
         
         String linhaQuebrada[];
         
+        if(!excluiComentario()){
+            System.out.println("O codigo erro nos comentarios!");
+            System.exit(0);
+        }
+        
+        if(!verificaSimbolos()){
+            System.out.println("O codigo possui caracteres invalidos!");
+            System.exit(0);
+        }
+        separaSimbolos();
+        excluiTabulacao();
+        separaVariavel();
+        
         System.out.println("Token\t||\tClassificacao\t||\tLinha");
+        
         
         for(int i = 0; i < cod.size(); i++){
             
@@ -341,34 +380,21 @@ public class Analisador {
             
             for(int j = 0; j < linhaQuebrada.length; j++){
                 
-                if(linhaQuebrada[j].equals(chave.get(0)) ||
-                   linhaQuebrada[j].equals(chave.get(1)) ||
-                   linhaQuebrada[j].equals(chave.get(2)) ||
-                   linhaQuebrada[j].equals(chave.get(3)) ||
-                   linhaQuebrada[j].equals(chave.get(4)) ||
-                   linhaQuebrada[j].equals(chave.get(5)) ||
-                   linhaQuebrada[j].equals(chave.get(6)) ||
-                   linhaQuebrada[j].equals(chave.get(7)) ||
-                   linhaQuebrada[j].equals(chave.get(8)) ||
-                   linhaQuebrada[j].equals(chave.get(9)) ||
-                   linhaQuebrada[j].equals(chave.get(10)) ||
-                   linhaQuebrada[j].equals(chave.get(11)) ||
-                   linhaQuebrada[j].equals(chave.get(12)) ||
-                   linhaQuebrada[j].equals(chave.get(13))){
+                if(chave.contains(linhaQuebrada[j])){
                     
-                    System.out.println(linhaQuebrada[j]+"\t\tPalavra reservada\t\t"+(i+1));
+                    System.out.println(linhaQuebrada[j]+"\t\tPalavra reservada\t"+(i+1));
                 }
                 else if(linhaQuebrada[j].equals("+") || 
                         linhaQuebrada[j].equals("-") || 
                         linhaQuebrada[j].equals("or")){
                     
-                    System.out.println(linhaQuebrada[j]+"\t\tOperador aditivo\t\t"+(i+1));
+                    System.out.println(linhaQuebrada[j]+"\t\tOperador aditivo\t"+(i+1));
                 }
                 else if(linhaQuebrada[j].equals("*") || 
                         linhaQuebrada[j].equals("/") || 
                         linhaQuebrada[j].equals("and")){
                     
-                    System.out.println(linhaQuebrada[j]+"\t\tOperador multiplicativo\t\t"+(i+1));
+                    System.out.println(linhaQuebrada[j]+"\t\tOperador multiplicativo\t"+(i+1));
                 }
                 else if(linhaQuebrada[j].matches("\\d+")){
                     
@@ -406,6 +432,19 @@ public class Analisador {
     }
     
     public void mostraCod(){
+        
+        if(!excluiComentario()){
+            System.out.println("O codigo erro nos comentarios!");
+            System.exit(0);
+        }
+        
+        if(!verificaSimbolos()){
+            System.out.println("O codigo possui caracteres invalidos!");
+            System.exit(0);
+        }
+        separaSimbolos();
+        excluiTabulacao();
+        separaVariavel();
         
         for(int i = 0; i < cod.size(); i++)
             System.out.println(cod.get(i));
